@@ -92,7 +92,7 @@ function NovelCarousel() {
         {novels.slice(currentSet * novelsPerSet, (currentSet + 1) * novelsPerSet).map((novel, index) => (
           <div key={index} className="w-1/5 px-8">
             <div className="bg-white rounded-lg shadow-md flex flex-col items-center cursor-pointer" onClick={() => openModal(novel)}>
-              <img src={novel.coverImage} alt={novel.title} className="w-full h-60 rounded-t-lg object-cover" />
+              <img src={novel.coverImage} alt={novel.title} className="w-full h-76 rounded-t-lg object-cover" />
               <p className="text-center text-gray-800 font-semibold py-2">{novel.title}</p>
             </div>
           </div>
@@ -108,8 +108,8 @@ function NovelCarousel() {
       {isModalOpen && (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50 bg-black bg-opacity-50">
           <div className="bg-white w-3/4 h-3/4 rounded-lg shadow-lg p-6 flex relative">
-            <img src={selectedNovel.coverImage} alt={selectedNovel.title} className="w-1/2 h-full object-cover rounded-l-lg" />
-            <div className="w-1/2 p-6 flex flex-col justify-between">
+            <img src={selectedNovel.coverImage} alt={selectedNovel.title} className="w-1/3 h-full object-cover rounded-l-lg" />
+            <div className="w-2/3 p-6 flex flex-col justify-between">
               <div>
                 <h2 className="text-2xl font-semibold mb-2">{selectedNovel.title}</h2>
                 <p className="text-blue-600 mb-4">{selectedNovel.genre}</p>

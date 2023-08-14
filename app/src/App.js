@@ -7,6 +7,8 @@ import NovelCarousel from './components/NovelCarousel';
 import logo from './logo.svg';
 import Home from './pages/Home';
 import Novel from './pages/Novel';
+import StoryForm from './pages/StoryForm';
+import WriteStory from './pages/WriteStory';
 
 function App() {
   return (
@@ -16,7 +18,9 @@ function App() {
             <main>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/novel" elemnet={<Novel />} />
+                <Route path="/novel" element={<Novel />} />
+                <Route path="/write" element={<StoryForm />} />
+                <Route path="/write-story" element={<WriteStory />} />
             </Routes>
             </main>
         </BrowserRouter>
