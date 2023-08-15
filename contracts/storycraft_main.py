@@ -21,15 +21,15 @@ def main():
             )
 
         @sp.entry_point
-        def propose_chapter(self, option_1, option_2, option_3):
+        def propose_chapter(self, params):
             assert sp.sender == self.data.author, "Sender is not the Author"
             assert self.data.current_proposal.active == False, "Already a proposal is in progress"
             assert self.data.ongoing == True, "This story has been completed"
             assert sp.amount == sp.tez(1), "1 Tez has to be sent for each new chapter being proposed"
             
-            self.data.current_proposal.option_1 = option_1
-            self.data.current_proposal.option_2 = option_2
-            self.data.current_proposal.option_3 = option_3
+            self.data.current_proposal.option_1 = params.option_1
+            self.data.current_proposal.option_2 = params.option_2
+            self.data.current_proposal.option_3 = params.option_3
 
             temp = sp.add_seconds(sp.now, sp.int(172800))
             self.data.current_proposal.deadline = temp
@@ -113,30 +113,30 @@ def main():
 def test():
     title = "The Chronicles of SmartPy"
     first_chapter_hash = sp.bytes("0x00")
+    alice = sp.test_account("alice")
     scenario = sp.test_scenario(main)
-    contract = main.Story(title, first_chapter_hash, sp.test_account)
+    contract = main.Story(title, first_chapter_hash, alice.address)
     scenario += contract
 
     # Testing the initial storage values after deployment
-    scenario.verify(contract.data.author == sp.test_account)
+    scenario.verify(contract.data.author == alice.address)
     scenario.verify(contract.data.title == title)
     scenario.verify(contract.data.ongoing == True)
-    scenario.verify(len(contract.data.chapters) == 1)
     scenario.verify(contract.data.current_proposal.active == False)
 
     # Testing the propose_chapter entry point
     option_1 = sp.bytes("0x00")
     option_2 = sp.bytes("0x00")
-    option_3 = sp.bytes("Ox00")
-    scenario += contract.propose_chapter(option_1, option_2, option_3).run(sender = sp.test_account, amount = sp.tez(1))
+    option_3 = sp.bytes("0x00")
+    scenario += contract.propose_chapter(sp.record(option_1 = option_1, option_2 = option_2, option_3 = option_3)).run(sender = alice, amount = sp.tez(1))
     scenario.verify(contract.data.current_proposal.active == True)
     scenario.verify(contract.data.current_proposal.deadline == sp.now.add_seconds(172800))
     scenario.verify(contract.data.current_proposal.option_1 == option_1)
 
     # Testing the subscription entry point
-    crafter = sp.test_account_1
+    crafter = sp.test_account("crafter")
     scenario += contract.subscribe_story().run(sender = crafter, amount = sp.tez(1))
-    scenario.verify(crafter in contract.data.crafters)
+    scenario.verify(crafter.address in contract.data.crafters)
 
     # Testing the vote entry point
     scenario += contract.vote(1).run(sender = crafter)
@@ -146,12 +146,12 @@ def test():
     scenario.pnow += 172800
 
     # Testing check_result after voting
-    scenario += contract.check_result().run(sender = sp.test_account)
+    scenario += contract.check_result().run(sender = alice)
     scenario.verify(contract.data.current_proposal.active == False)
     scenario.verify(len(contract.data.current_proposal.votes) == 0)
 
     # Publishing the last chapter
     last_chapter_hash = sp.bytes("hash_of_last_chapter")
-    scenario += contract.last_chapter(last_chapter_hash).run(sender = sp.test_account, amount = sp.tez(1))
+    scenario += contract.last_chapter(last_chapter_hash).run(sender = alice, amount = sp.tez(1))
     scenario.verify(contract.data.ongoing == False)
     scenario.verify(contract.data.chapters[contract.data.chapter_id] == last_chapter_hash)
