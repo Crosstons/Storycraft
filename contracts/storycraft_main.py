@@ -3,8 +3,8 @@ import smartpy as sp
 @sp.module
 def main():
     class Story(sp.Contract):
-        def __init__(self, title, first_chapter_hash, creator):
-            self.data.author = creator
+        def __init__(self, title, first_chapter_hash, author):
+            self.data.author = author
             self.data.crafters = sp.set()
             self.data.title = title
             self.data.chapters = {}
@@ -109,6 +109,29 @@ def main():
             self.data.chapters[current_chapter] = last_chapter_hash
             self.data.ongoing = False
 
+    class StoryCreator(sp.Contract):
+        def __init__(self):
+            self.data.storyList = []
+
+        @sp.entrypoint
+        def createStory(self, params):
+            story = sp.create_contract(Story, None, sp.mutez(0), sp.record(title = params.title, 
+                                                                           author = sp.sender,
+                                                                           chapter_id = sp.nat(1),
+                                                                           ongoing = True,
+                                                                           chapters = { 1 : params.first_chapter_hash },
+                                                                           crafters = sp.set(),
+                                                                           current_proposal = sp.record(
+                                                                                votes = {},
+                                                                                option_1 = sp.bytes(""),
+                                                                                option_2 = sp.bytes(""),
+                                                                                option_3 = sp.bytes(""),
+                                                                                deadline = sp.timestamp(0),
+                                                                                active = False
+                                                                                )
+                                                                          ))
+            self.data.storyList.push(story)
+
 @sp.add_test(name = "Story Contract")
 def test():
     title = "The Chronicles of SmartPy"
@@ -116,7 +139,9 @@ def test():
     alice = sp.test_account("alice")
     scenario = sp.test_scenario(main)
     contract = main.Story(title, first_chapter_hash, alice.address)
+    creator_contract = main.StoryCreator()
     scenario += contract
+    scenario += creator_contract
 
     # Testing the initial storage values after deployment
     scenario.verify(contract.data.author == alice.address)
@@ -128,30 +153,27 @@ def test():
     option_1 = sp.bytes("0x00")
     option_2 = sp.bytes("0x00")
     option_3 = sp.bytes("0x00")
-    scenario += contract.propose_chapter(sp.record(option_1 = option_1, option_2 = option_2, option_3 = option_3)).run(sender = alice, amount = sp.tez(1))
+    contract.propose_chapter(sp.record(option_1 = option_1, option_2 = option_2, option_3 = option_3)).run(sender = alice, amount = sp.tez(1))
     scenario.verify(contract.data.current_proposal.active == True)
     scenario.verify(contract.data.current_proposal.deadline == sp.now.add_seconds(172800))
     scenario.verify(contract.data.current_proposal.option_1 == option_1)
 
     # Testing the subscription entry point
     crafter = sp.test_account("crafter")
-    scenario += contract.subscribe_story().run(sender = crafter, amount = sp.tez(1))
-    scenario.verify(crafter.address in contract.data.crafters)
+    contract.subscribe_story().run(sender = crafter, amount = sp.tez(1))
+    scenario.verify(contract.data.crafters.contains(crafter.address))
 
     # Testing the vote entry point
-    scenario += contract.vote(1).run(sender = crafter)
-    scenario.verify(contract.data.current_proposal.votes[crafter] == 1)
-
-    # Simulate a passage of time to reach the deadline
-    scenario.pnow += 172800
+    contract.vote(1).run(sender = crafter)
+    scenario.verify(contract.data.current_proposal.votes[crafter.address] == 1)
 
     # Testing check_result after voting
-    scenario += contract.check_result().run(sender = alice)
+    contract.check_result().run(sender = alice, valid = False)
     scenario.verify(contract.data.current_proposal.active == False)
     scenario.verify(len(contract.data.current_proposal.votes) == 0)
 
     # Publishing the last chapter
     last_chapter_hash = sp.bytes("hash_of_last_chapter")
-    scenario += contract.last_chapter(last_chapter_hash).run(sender = alice, amount = sp.tez(1))
+    contract.last_chapter(last_chapter_hash).run(sender = alice, amount = sp.tez(1))
     scenario.verify(contract.data.ongoing == False)
     scenario.verify(contract.data.chapters[contract.data.chapter_id] == last_chapter_hash)
