@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react'
 import NovelCarousel from '../components/NovelCarousel'
 import { fetchStorage } from '../utils/tzkt';
 import { createOperation } from '../utils/operations';
-import { connectWallet } from '../utils/wallet';
+import { getStory } from '../utils/firebase';
 
 function Home() {
 
   useEffect(() => {
     (async () => {
-        await connectWallet();
         const res = await fetchStorage();
+        await getStory();
         console.log(res);              
     })();    
   }, []); 
