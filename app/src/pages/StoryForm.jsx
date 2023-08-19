@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
+import { createOperation } from '../utils/operations';
+
+const utf8EncodeText = new TextEncoder();
+const crypto = require('crypto');
 
 function StoryForm() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [firstChapter, setFirstChapter] = useState('');
     const [characters, setCharacters] = useState([]);
     const [characterInput, setCharacterInput] = useState('');
     const [genre, setGenre] = useState('');
     const [language, setLanguage] = useState('');
     const [isMature, setIsMature] = useState(false);
     const [uploadedImage, setUploadedImage] = useState(null);
-  
-    const handleAddCharacter = () => {
-      if (characterInput) {
-        setCharacters(prevCharacters => [...prevCharacters, characterInput]);
-        setCharacterInput('');
-      }
-    };
+
+
+
+    const onSubmit = async () => {
+      console.log(crypto.createHash('sha256').update(firstChapter).digest('hex'));
+      await createOperation(title, utf8EncodeText.encode("0x" + crypto.createHash('sha256').update(firstChapter).digest('hex')));
+    }
   
     const handleRemoveCharacter = (index) => {
       setCharacters(prevCharacters => prevCharacters.filter((_, i) => i !== index));
@@ -38,7 +43,7 @@ function StoryForm() {
   return (
     <div className="py-8 px-10 flex flex-col items-center bg-gray-50 h-screen">
       <h1 className="text-2xl font-semibold mb-4">Add Your Story</h1>
-      <form className="w-3/4 bg-white p-6 rounded-lg shadow-md">
+      <div className="w-3/4 bg-white p-6 rounded-lg shadow-md">
         <div className="mb-4">
             <div className="mb-4 flex flex-col items-center">
             {uploadedImage ? (
@@ -66,26 +71,12 @@ function StoryForm() {
           <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700 h-32"></textarea>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Main Characters:</label>
-          <div className="flex items-center">
-            <input type="text" value={characterInput} onChange={(e) => setCharacterInput(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700 mr-2" />
-            <button type="button" onClick={handleAddCharacter} className="bg-blue-600 text-white py-1 px-2 rounded">Add</button>
-          </div>
-          <ul className="mt-2">
-            {characters.map((char, index) => (
-              <li key={index} className="flex items-center mt-2">
-                {char}
-                <button type="button" onClick={() => handleRemoveCharacter(index)} className="ml-2 text-red-600">Remove</button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">Category/Genre:</label>
           <select onChange={(e) => setGenre(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700">
             <option value="fantasy">Fantasy</option>
             <option value="mystery">Mystery</option>
             <option value="romance">Romance</option>
+            <option value="adult">Adult</option>
             {/* Add more genres as needed */}
           </select>
         </div>
@@ -97,8 +88,12 @@ function StoryForm() {
           <label className="block text-gray-700 text-sm font-bold mr-2">Mature Content:</label>
           <input type="checkbox" checked={isMature} onChange={() => setIsMature(!isMature)} />
         </div>
-        <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">Submit</button>
-      </form>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">First Chapter :</label>
+          <textarea value={firstChapter} onChange={(e) => setFirstChapter(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700 h-32"></textarea>
+        </div>
+        <button onClick={onSubmit} className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">Submit</button>
+      </div>
     </div>
   );
 }
