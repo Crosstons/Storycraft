@@ -13,9 +13,9 @@ def main():
             self.data.chapters[1] = first_chapter_hash
             self.data.current_proposal = sp.record(
                 votes = {},
-                option_1 = sp.bytes(""),
-                option_2 = sp.bytes(""),
-                option_3 = sp.bytes(""),
+                option_1 = "",
+                option_2 = "",
+                option_3 = "",
                 deadline = sp.timestamp(0),
                 active = False
             )
@@ -81,9 +81,9 @@ def main():
 
             self.data.current_proposal = sp.record(
                 votes = {},
-                option_1 = sp.bytes(""),
-                option_2 = sp.bytes(""),
-                option_3 = sp.bytes(""),
+                option_1 = "",
+                option_2 = "",
+                option_3 = "",
                 active = False,
                 deadline = sp.timestamp(0)
             )
@@ -123,9 +123,9 @@ def main():
                                                                            crafters = sp.set(),
                                                                            current_proposal = sp.record(
                                                                                 votes = {},
-                                                                                option_1 = sp.bytes(""),
-                                                                                option_2 = sp.bytes(""),
-                                                                                option_3 = sp.bytes(""),
+                                                                                option_1 = "",
+                                                                                option_2 = "",
+                                                                                option_3 = "",
                                                                                 deadline = sp.timestamp(0),
                                                                                 active = False
                                                                                 )
@@ -135,7 +135,7 @@ def main():
 @sp.add_test(name = "Story Contract")
 def test():
     title = "The Chronicles of SmartPy"
-    first_chapter_hash = sp.bytes("0x00")
+    first_chapter_hash = "0x00"
     alice = sp.test_account("alice")
     scenario = sp.test_scenario(main)
     contract = main.Story(title, first_chapter_hash, alice.address)
@@ -150,9 +150,9 @@ def test():
     scenario.verify(contract.data.current_proposal.active == False)
 
     # Testing the propose_chapter entry point
-    option_1 = sp.bytes("0x00")
-    option_2 = sp.bytes("0x00")
-    option_3 = sp.bytes("0x00")
+    option_1 = "0x00"
+    option_2 = "0x00"
+    option_3 = "0x00"
     contract.propose_chapter(sp.record(option_1 = option_1, option_2 = option_2, option_3 = option_3)).run(sender = alice, amount = sp.tez(1))
     scenario.verify(contract.data.current_proposal.active == True)
     scenario.verify(contract.data.current_proposal.deadline == sp.now.add_seconds(172800))

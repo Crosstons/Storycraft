@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { createOperation } from '../utils/operations';
 
-const utf8EncodeText = new TextEncoder();
 const crypto = require('crypto');
 
 function StoryForm() {
@@ -18,8 +17,7 @@ function StoryForm() {
 
 
     const onSubmit = async () => {
-      console.log(crypto.createHash('sha256').update(firstChapter).digest('hex'));
-      await createOperation(title, utf8EncodeText.encode("0x" + crypto.createHash('sha256').update(firstChapter).digest('hex')));
+      await createOperation(title, "0x" + crypto.createHash('sha256').update(firstChapter).digest('hex'));
     }
   
     const handleRemoveCharacter = (index) => {
