@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { addDoc, doc, getFirestore, setDoc } from "firebase/firestore";
 import { collection, getDocs, query, where } from "firebase/firestore"; 
 
 const firebaseConfig = {
@@ -24,6 +24,35 @@ export const getStory = async () => {
       output.push(doc.data());
     });
     return output;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const firebaseBaseAddStory = async (title, coverImage, desc, category, matureBool, chapters, author_address) => {
+  try {
+    await addDoc(doc(db, "stories"), {
+      title : title,
+      desc : desc,
+      category : category,
+      mature : matureBool,
+      coverImage : coverImage,
+      chapters : chapters,
+      author : author_address,
+    }); 
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const firebaseAddChapter = async (story, option1, option2, option3) => {
+  try {
+    await addDoc(doc(db, "chapters"), {
+      story : story,
+      option1 : option1,
+      option2 : option2,
+      option3 : option3
+    }); 
   } catch (error) {
     console.log(error);
   }

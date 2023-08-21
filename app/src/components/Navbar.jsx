@@ -13,7 +13,7 @@ function Navbar() {
         const account = await getAccount();
         setAccount(account);        
     })();
-}, [])
+  }, []);
 
   const onClickConnect = async () => {
     await connectWallet();
