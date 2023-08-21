@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function NovelCarousel() {
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prevTime => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
   const novels = [
     {
       title: "Novel One",
@@ -69,6 +76,21 @@ function NovelCarousel() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const novelsPerSet = 5;
   const totalSets = Math.ceil(novels.length / novelsPerSet);
+  const [timeLeft, setTimeLeft] = useState(48 * 60 * 60); // 2 days in seconds
+
+
+
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = timeLeft % 60;
+
+  const [votes, setVotes] = useState([0, 0, 0]);
+
+  const handleVote = (index) => {
+    const newVotes = [...votes];
+    newVotes[index]++;
+    setVotes(newVotes);
+  };
 
   const openModal = (novel) => {
     setSelectedNovel(novel);
@@ -116,15 +138,22 @@ function NovelCarousel() {
                 <p className="text-gray-700 mb-4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus pariatur aliquam consequatur. Sed corrupti odio exercitationem eum maiores. Aperiam qui unde non aliquid dicta tempore repellendus atque tempora. Hic, porro.</p>
                 
                 {selectedNovel.proposal?.ongoing && (
-                  <div className="mb-4">
-                    <h3 className="text-xl font-semibold mb-2">Story Continuations:</h3>
-                    {selectedNovel.proposal.continuations.map((cont, index) => (
-                      <div key={index} className="bg-gray-100 hover:bg-blue-600 transition-all duration-200 text-lg ease-in-out hover:text-white cursor-pointer p-4 rounded-lg mb-2">
-                        {cont}
-                      </div>
-                    ))}
+                <div className="mb-4">
+                  <h3 className="text-xl font-semibold mb-2">Story Continuations:</h3>
+                  {selectedNovel.proposal.continuations.map((cont, index) => (
+                    <div key={index} className="flex justify-between items-center bg-gray-100 hover:bg-blue-600 transition-all duration-200 text-lg ease-in-out hover:text-white cursor-pointer p-4 rounded-lg mb-2">
+                      <span>{cont}</span>
+                      <button onClick={() => handleVote(index)} className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                        {votes[index]}
+                      </button>
+                    </div>
+                  ))}
+                  <div className="text-center text-gray-700 bg-white rounded-lg p-2 mt-2">
+                    <h2 className="text-xl">Voting Time Left</h2>
+                    <p className="text-lg">{`${hours}h ${minutes}m ${seconds}s`}</p>
                   </div>
-                )}
+                </div>
+              )}
               </div>
               <button className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">Start Reading</button>
             </div>
