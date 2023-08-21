@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function ChapterDisplay({ chapters }) {
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
+  const [timer, setTimer] = useState(60); // 60 seconds for example
+  const [timeLeft, setTimeLeft] = useState(48 * 60 * 60); // 2 days in seconds
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      setTimer(prevTimer => prevTimer - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(timerId);
+    };
+  }, []);
 
   const handleChapterChange = (index) => {
     setCurrentChapterIndex(index);
@@ -12,6 +24,9 @@ function ChapterDisplay({ chapters }) {
       setCurrentChapterIndex(prevIndex => prevIndex + 1);
     }
   };
+  const hours = Math.floor(timeLeft / 3600);
+  const minutes = Math.floor((timeLeft % 3600) / 60);
+  const seconds = timeLeft % 60;
 
   return (
     <div className="py-4 px-6 flex flex-col items-start bg-gray-50 w-4/5 mx-auto">
@@ -33,7 +48,17 @@ function ChapterDisplay({ chapters }) {
           </svg>
         </div>
       </div>
-
+        <div className="w-1/2 mb-4">
+            <div className="flex justify-start border-b">
+              <button onClick={() => setActiveTab(0)} className={`py-2 px-4 ${activeTab === 0 ? 'border-b-2 border-blue-600' : ''}`}>Variation 1</button>
+              <button onClick={() => setActiveTab(1)} className={`py-2 px-4 ${activeTab === 1 ? 'border-b-2 border-blue-600' : ''}`}>Variation 2</button>
+              <button onClick={() => setActiveTab(2)} className={`py-2 px-4 ${activeTab === 2 ? 'border-b-2 border-blue-600' : ''}`}>Variation 3</button>
+            </div>
+        </div>
+        <div className="text-center text-gray-700  rounded-lg p-2 my-2">
+          <h2 className="text-xl">Voting Time Left</h2>
+          <p className="text-lg">{`${hours}h ${minutes}m ${seconds}s`}</p>
+        </div>
       <h1 className="text-2xl font-semibold mb-4">{chapters[currentChapterIndex].title}</h1>
       <p className="text-gray-700 mb-4">{chapters[currentChapterIndex].content}</p>
       <button
