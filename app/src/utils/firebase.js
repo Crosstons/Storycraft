@@ -45,10 +45,11 @@ export const firebaseBaseAddStory = async (title, coverImage, desc, category, ma
   }
 }
 
-export const firebaseAddChapter = async (story, option1, option2, option3) => {
+export const firebaseAddProposal = async (story, title, option1, option2, option3) => {
   try {
-    const docRef = await addDoc(collection(db, "chapters"), {
+    const docRef = await addDoc(collection(db, "proposals"), {
       story : story,
+      title : title,
       option1 : option1,
       option2 : option2,
       option3 : option3
