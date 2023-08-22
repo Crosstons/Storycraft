@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createOperation } from '../utils/operations';
 import { firebaseBaseAddStory } from '../utils/firebase';
+import { getAccount } from '../utils/wallet';
 
 const crypto = require('crypto');
 
@@ -9,9 +10,10 @@ function StoryForm() {
     const [account, setAccount] = useState('');
     const [description, setDescription] = useState('');
     const [firstChapter, setFirstChapter] = useState('');
-    const [genre, setGenre] = useState('');
+    const [genre, setGenre] = useState('fantasy');
     const [isMature, setIsMature] = useState(false);
     const [image, setImage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
       (async () => {
@@ -22,9 +24,15 @@ function StoryForm() {
 
 
     const onSubmit = async () => {
-      await createOperation(title, "0x" + crypto.createHash('sha256').update(firstChapter).digest('hex'));
-      
-      await firebaseBaseAddStory(title, image, description, genre, isMature, [], account);
+      try {
+        setLoading(true);        
+        const res = await createOperation(title, "0x" + crypto.createHash('sha256').update(firstChapter).digest('hex'));
+        console.log(res);
+        await firebaseBaseAddStory(title, image, description, genre, isMature, [], account);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
 
   return (
@@ -61,7 +69,7 @@ function StoryForm() {
           <label className="block text-gray-700 text-sm font-bold mb-2">First Chapter :</label>
           <textarea value={firstChapter} onChange={(e) => setFirstChapter(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700 h-32"></textarea>
         </div>
-        <button onClick={onSubmit} className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">Submit</button>
+        <button onClick={onSubmit} className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">{ loading ? "Loading.." : "Submit" }</button>
       </div>
     </div>
   );

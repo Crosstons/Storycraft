@@ -31,7 +31,7 @@ export const getStory = async () => {
 
 export const firebaseBaseAddStory = async (title, coverImage, desc, category, matureBool, chapters, author_address) => {
   try {
-    await addDoc(doc(db, "stories"), {
+    await addDoc(collection(db, "stories"), {
       title : title,
       desc : desc,
       category : category,
@@ -47,12 +47,13 @@ export const firebaseBaseAddStory = async (title, coverImage, desc, category, ma
 
 export const firebaseAddChapter = async (story, option1, option2, option3) => {
   try {
-    await addDoc(doc(db, "chapters"), {
+    const docRef = await addDoc(collection(db, "chapters"), {
       story : story,
       option1 : option1,
       option2 : option2,
       option3 : option3
     }); 
+    return docRef.id;
   } catch (error) {
     console.log(error);
   }
