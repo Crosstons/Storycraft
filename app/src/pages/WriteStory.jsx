@@ -1,18 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { proposeOperation } from '../utils/operations';
 import { firebaseAddProposal } from '../utils/firebase';
+import { useParams } from 'react-router-dom';
+import { fetchStorage, fetchStoryTitle } from '../utils/tzkt';
 
 const crypto = require('crypto');
 
 function WriteStory() {
+  const {title} = useParams();
   const [chapterTitle, setChapterTitle] = useState('');
   const [storyContent, setStoryContent] = useState(['', '', '']);
   const [activeTab, setActiveTab] = useState(0);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [addr, setAddr] = useState("");
 
   const storyTitle = "Sample Story Title"; // Placeholder, replace with actual title
   const storyImage = "https://img.wattpad.com/cover/349773878-64-ka76e5f.jpg"; // Placeholder, replace with actual image 
-  const addr = "KT1S4GPfxNeLPENMF5GdK5CL96b9KAfDKpQ1";
 
   const textAreaRef = useRef(null);
 
@@ -20,6 +22,19 @@ function WriteStory() {
     textAreaRef.current.style.height = 'auto';
     textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
   }, [storyContent]);
+
+  useEffect(() => {
+    (async () => {
+        const res = await fetchStorage();
+        for(const i in res) {
+          const temp = await fetchStoryTitle(res[i]);
+          if(temp == title) {
+            setAddr(res[i]);
+          }
+        }
+        console.log(addr);         
+    })();    
+  }, []); 
 
   const onSubmit = async () => {
     console.log(storyContent[0]);

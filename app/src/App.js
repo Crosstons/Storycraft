@@ -20,7 +20,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/novel" element={<Novel />} />
                 <Route path="/write" element={<StoryForm />} />
-                <Route path="/write-story" element={<WriteStory />} />
+                <Route path="/write-story/:title/" element={<WriteStory />} />
             </Routes>
             </main>
         </BrowserRouter>

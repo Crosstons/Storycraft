@@ -1,68 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import { getStories } from '../utils/firebase';
 
 function NovelCarousel() {
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prevTime => prevTime - 1);
-    }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
-  const novels = [
+  useEffect(() => {
+    (async () => {
+      let temp = [];
+      const res = await getStories();
+      for(const i in res) {
+        temp.push({title : res[i].title, genre : res[i].category, coverImage : res[i].coverImage, desc : res[i].desc});
+      }
+      setNovels(temp);
+      console.log(res);            
+    })();    
+  }, []); 
+
+  const [novels, setNovels] = useState([
     {
       title: "Novel One",
       genre: "Fantasy",
       coverImage: "https://img.wattpad.com/cover/136190999-100-k182487.jpg",
-      proposal: {
-        ongoing: true,
-        continuations: [
-          "Continuation 1 of the story...",
-          "Continuation 2 of the story...",
-          "Continuation 3 of the story..."
-        ]
-      }
     },
     {
       title: "Novel One",
       genre: "Fantasy",
       coverImage: "https://img.wattpad.com/cover/153033908-64-k415468.jpg",
-      proposal: {
-        ongoing: true,
-        continuations: [
-          "Continuation 1 of the story...",
-          "Continuation 2 of the story...",
-          "Continuation 3 of the story..."
-        ]
-      }
     },
     {
       title: "Novel One",
       genre: "Fantasy",
       coverImage: "https://img.wattpad.com/cover/221894655-100-k477529.jpg",
-      proposal: {
-        ongoing: true,
-        continuations: [
-          "Continuation 1 of the story...",
-          "Continuation 2 of the story...",
-          "Continuation 3 of the story..."
-        ]
-      }
     },
     {
       title: "Novel One",
       genre: "Fantasy",
       coverImage: "https://img.wattpad.com/cover/624774-100-k243620.jpg",
-      proposal: {
-        ongoing: true,
-        continuations: [
-          "Continuation 1 of the story...",
-          "Continuation 2 of the story...",
-          "Continuation 3 of the story..."
-        ]
-      }
     },
-    // ... add more novels as needed
-  ];
+  ]);
 
   const nextSet = () => {
     setCurrentSet(prevSet => (prevSet + 1) % totalSets);
@@ -76,21 +50,6 @@ function NovelCarousel() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const novelsPerSet = 5;
   const totalSets = Math.ceil(novels.length / novelsPerSet);
-  const [timeLeft, setTimeLeft] = useState(48 * 60 * 60); // 2 days in seconds
-
-
-
-  const hours = Math.floor(timeLeft / 3600);
-  const minutes = Math.floor((timeLeft % 3600) / 60);
-  const seconds = timeLeft % 60;
-
-  const [votes, setVotes] = useState([0, 0, 0]);
-
-  const handleVote = (index) => {
-    const newVotes = [...votes];
-    newVotes[index]++;
-    setVotes(newVotes);
-  };
 
   const openModal = (novel) => {
     setSelectedNovel(novel);
@@ -135,16 +94,7 @@ function NovelCarousel() {
               <div>
                 <h2 className="text-2xl font-semibold mb-2">{selectedNovel.title}</h2>
                 <p className="text-blue-600 mb-4">{selectedNovel.genre}</p>
-                <p className="text-gray-700 mb-4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus pariatur aliquam consequatur. Sed corrupti odio exercitationem eum maiores. Aperiam qui unde non aliquid dicta tempore repellendus atque tempora. Hic, porro.</p>
-                
-                {selectedNovel.proposal?.ongoing && (
-                <div className="mb-4">
-                  <div className="text-center text-gray-700 bg-white rounded-lg p-2 mt-2">
-                    <h2 className="text-xl">Voting Time Left</h2>
-                    <p className="text-lg">{`${hours}h ${minutes}m ${seconds}s`}</p>
-                  </div>
-                </div>
-              )}
+                <p className="text-gray-700 mb-4">{selectedNovel.desc}</p>
               </div>
               <button className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">Start Reading</button>
             </div>

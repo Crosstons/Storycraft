@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createOperation } from '../utils/operations';
 import { firebaseBaseAddStory } from '../utils/firebase';
 import { getAccount } from '../utils/wallet';
+import { fetchStorage, fetchStoryTitle } from '../utils/tzkt';
 
 const crypto = require('crypto');
 
@@ -26,8 +27,7 @@ function StoryForm() {
     const onSubmit = async () => {
       try {
         setLoading(true);        
-        const res = await createOperation(title, "0x" + crypto.createHash('sha256').update(firstChapter).digest('hex'));
-        console.log(res);
+        await createOperation(title, "0x" + crypto.createHash('sha256').update(firstChapter).digest('hex'));
         await firebaseBaseAddStory(title, image, description, genre, isMature, [], account);
         setLoading(false);
       } catch (error) {
