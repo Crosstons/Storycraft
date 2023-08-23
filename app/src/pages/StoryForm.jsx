@@ -67,7 +67,7 @@ function StoryForm() {
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">First Chapter :</label>
-          <textarea value={firstChapter} onChange={(e) => setFirstChapter(e.target.value)} className="border rounded w-full py-2 px-3 text-gray-700 h-32"></textarea>
+          <textarea value={firstChapter} onChange={(e) => setFirstChapter(e.target.value)} className="border resize-none rounded w-full py-2 px-3 text-gray-700 h-32"></textarea>
         </div>
         <button onClick={onSubmit} className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">{ loading ? "Loading.." : "Submit" }</button>
       </div>

@@ -139,15 +139,6 @@ function NovelCarousel() {
                 
                 {selectedNovel.proposal?.ongoing && (
                 <div className="mb-4">
-                  <h3 className="text-xl font-semibold mb-2">Story Continuations:</h3>
-                  {selectedNovel.proposal.continuations.map((cont, index) => (
-                    <div key={index} className="flex justify-between items-center bg-gray-100 hover:bg-blue-600 transition-all duration-200 text-lg ease-in-out hover:text-white cursor-pointer p-4 rounded-lg mb-2">
-                      <span>{cont}</span>
-                      <button onClick={() => handleVote(index)} className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
-                        {votes[index]}
-                      </button>
-                    </div>
-                  ))}
                   <div className="text-center text-gray-700 bg-white rounded-lg p-2 mt-2">
                     <h2 className="text-xl">Voting Time Left</h2>
                     <p className="text-lg">{`${hours}h ${minutes}m ${seconds}s`}</p>

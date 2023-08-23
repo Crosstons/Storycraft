@@ -41,31 +41,9 @@ function WriteStory() {
   return (
     <div className="h-full w-full bg-white flex flex-col">
       {/* Top Bar */}
-      <div className="flex justify-between items-center bg-white p-4 shadow-md">
-        <div className="flex items-center relative cursor-pointer" onClick={() => setDropdownOpen(!dropdownOpen)}>
-          <img src={storyImage} alt={storyTitle} className="w-10 h-16 object-cover rounded mr-4" />
-            <div className='block'>
-                <h1 className="text-xl font-semibold">{storyTitle}</h1>
-                <p className='text-gray-500'>Chapter 1</p>
-            </div>
-          <svg className={`w-5 h-5 ml-2 transform transition-transform duration-300 ${dropdownOpen ? 'rotate-180' : 'rotate-0'}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 7L10 10L13 7" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          {dropdownOpen && (
-            <div className="absolute left-0 mt-60 w-48 rounded-md shadow-lg bg-white">
-              {/* Sample chapters, replace with actual chapter list */}
-              <div className="py-1">
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Chapter 1</a>
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Chapter 2</a>
-                <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Chapter 3</a> 
-                <div className='flex justify-center my-2'><button className="bg-blue-600 text-white py-0.5 px-2 rounded-lg pb-1">+</button></div>
-              </div>
-            </div>
-          )}
-        </div>
-        <div>
+      <div className="flex justify-center items-center bg-white p-4 shadow-md">
+        <div className="text-center">
           <button onClick={onSubmit} className="bg-blue-600 text-white py-2 px-4 rounded-lg mr-2">Publish</button>
-          <button className="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg">Save</button>
         </div>
       </div>
 
@@ -90,7 +68,7 @@ function WriteStory() {
             value={storyContent[activeTab]} 
             onChange={e => handleContentChange(e, activeTab)} 
             placeholder="Start writing your story here..." 
-            className="text-center p-4 focus:outline-none placeholder-gray-500 resize-none w-1/2"
+            className="text-left p-4 focus:outline-none placeholder-gray-500 resize-none w-1/2"
           ></textarea>
       </div>
     </div>
