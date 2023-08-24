@@ -18,7 +18,7 @@ function App() {
             <main>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/novel" element={<Novel />} />
+                <Route path="/read/:addr/" element={<Novel />} />
                 <Route path="/write" element={<StoryForm />} />
                 <Route path="/write-story/:title/" element={<WriteStory />} />
             </Routes>

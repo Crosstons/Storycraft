@@ -1,42 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { getStories } from '../utils/firebase';
+import { fetchStorage, fetchStoryTitle } from '../utils/tzkt';
+import { useNavigate } from 'react-router-dom';
 
 function NovelCarousel() {
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
       let temp = [];
+      const res2 = await fetchStorage();
       const res = await getStories();
       for(const i in res) {
-        temp.push({title : res[i].title, genre : res[i].category, coverImage : res[i].coverImage, desc : res[i].desc});
+        for(const j in res2) {
+          const temp2 = await fetchStoryTitle(res2[j]);
+          if(temp2 == res[i].title) {
+            temp.push({title : res[i].title, genre : res[i].category, coverImage : res[i].coverImage, desc : res[i].desc, addr : res2[j]}); 
+          }
+        }
       }
       setNovels(temp);
       console.log(res);            
     })();    
   }, []); 
 
-  const [novels, setNovels] = useState([
-    {
-      title: "Novel One",
-      genre: "Fantasy",
-      coverImage: "https://img.wattpad.com/cover/136190999-100-k182487.jpg",
-    },
-    {
-      title: "Novel One",
-      genre: "Fantasy",
-      coverImage: "https://img.wattpad.com/cover/153033908-64-k415468.jpg",
-    },
-    {
-      title: "Novel One",
-      genre: "Fantasy",
-      coverImage: "https://img.wattpad.com/cover/221894655-100-k477529.jpg",
-    },
-    {
-      title: "Novel One",
-      genre: "Fantasy",
-      coverImage: "https://img.wattpad.com/cover/624774-100-k243620.jpg",
-    },
-  ]);
+  const [novels, setNovels] = useState([]);
 
   const nextSet = () => {
     setCurrentSet(prevSet => (prevSet + 1) % totalSets);
@@ -61,9 +50,13 @@ function NovelCarousel() {
     setSelectedNovel(null);
   };
 
+  const onRead = (addr) => {
+    navigate(`read/${addr}`);
+  }
+
   return (
     <div className="py-4 px-6 flex flex-col items-center bg-gray-50">
-      <h1 className="text-2xl font-semibold mb-4">{novels[0]?.genre || "Genre"}</h1>
+      <h1 className="text-2xl font-semibold mb-4">{"Browse"}</h1>
       <div className="flex justify-between w-4/5 mb-4 relative">
       <button onClick={prevSet} className="absolute bg-blue-600 p-1 rounded-lg text-white -left-8 top-1/2 transform -translate-y-1/2 z-10 mr-8">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -96,7 +89,7 @@ function NovelCarousel() {
                 <p className="text-blue-600 mb-4">{selectedNovel.genre}</p>
                 <p className="text-gray-700 mb-4">{selectedNovel.desc}</p>
               </div>
-              <button className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">Start Reading</button>
+              <button onClick={() => onRead(selectedNovel.addr)} className="bg-blue-600 text-white py-2 px-4 rounded-lg self-end">Start Reading</button>
             </div>
             <button onClick={closeModal} className="absolute top-4 right-4 text-2xl font-bold text-gray-700 hover:text-gray-900">&times;</button>
           </div>

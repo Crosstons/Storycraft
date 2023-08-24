@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import ChapterDisplay from '../components/ChaptersDisplay';
+import { useParams } from 'react-router-dom';
+
 const chaptersData = [
     {
       title: "Chapter 1: The Beginning",
@@ -11,7 +13,17 @@ const chaptersData = [
     },
     // ... more chapters
   ];
+
 function Novel() {
+
+  const {addr} = useParams();
+
+  useEffect(() => {
+    (async () => {
+      console.log(addr);  
+    })();    
+  }, []); 
+
   return (
     <div>
         <ChapterDisplay chapters={chaptersData} />;
