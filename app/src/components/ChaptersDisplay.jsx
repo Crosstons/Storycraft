@@ -6,13 +6,9 @@ function ChapterDisplay({ chapters, proposal_active }) {
   const [timeLeft, setTimeLeft] = useState(48 * 60 * 60); // 2 days in seconds
 
   useEffect(() => {
-    const timerId = setInterval(() => {
-      setTimeLeft(prevTime => prevTime - 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(timerId);
-    };
+    (async () => {
+        console.log(proposal_active);    
+    })();
   }, []);
 
   const handleChapterChange = (index) => {
@@ -49,13 +45,15 @@ function ChapterDisplay({ chapters, proposal_active }) {
           </svg>
         </div>
       </div>
-      <div className="w-1/2 mb-4">
+      { proposal_active ? 
+        <div className="w-1/2 mb-4">
         <div className="flex justify-start border-b">
           <button onClick={() => setActiveTab(0)} className={`py-2 px-4 ${activeTab === 0 ? 'border-b-2 border-blue-600' : ''}`}>Variation 1</button>
           <button onClick={() => setActiveTab(1)} className={`py-2 px-4 ${activeTab === 1 ? 'border-b-2 border-blue-600' : ''}`}>Variation 2</button>
           <button onClick={() => setActiveTab(2)} className={`py-2 px-4 ${activeTab === 2 ? 'border-b-2 border-blue-600' : ''}`}>Variation 3</button>
         </div>
-      </div>
+        </div>
+       : "" }
       <h1 className="text-2xl font-semibold mb-4">{chapters[currentChapterIndex].title}</h1>
       <p className="text-gray-700 mb-4">{chapters[currentChapterIndex].content}</p>
       <button
@@ -74,7 +72,7 @@ function ChapterDisplay({ chapters, proposal_active }) {
             <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Variation 3</button>
           </div>
         </div>
-      : ""}
+      : "" }
     </div>
   );
 }

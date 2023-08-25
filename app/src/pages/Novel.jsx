@@ -18,10 +18,11 @@ function Novel() {
   useEffect(() => {
     (async () => {
       const temp_title = await fetchStoryStorage(addr);
-      setActiveProposal(temp_title.ongoing);
-      if(temp_title.ongoing == true) {
+      console.log(temp_title.current_proposal.active);
+      if(temp_title.current_proposal.active == true) {
         const proposal_res = await getProposalOfTheStory(temp_title.title);
         console.log(proposal_res);
+        setActiveProposal(true);
       }
       const res = await getChaptersOfTheStory(temp_title.title);
       setChapterData(res);
@@ -30,7 +31,7 @@ function Novel() {
 
   return (
     <div>
-        <ChapterDisplay chapters={chaptersData} proposal_active={activeProposal} />;
+        <ChapterDisplay chapters={chaptersData} proposal_active={activeProposal} />
     </div>
   )
 }
