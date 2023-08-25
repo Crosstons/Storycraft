@@ -21,7 +21,7 @@ function NovelCarousel() {
         }
       }
       setNovels(temp);
-      console.log(res);            
+    //  console.log(res);            
     })();    
   }, []); 
 

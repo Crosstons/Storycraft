@@ -1,32 +1,36 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import ChapterDisplay from '../components/ChaptersDisplay';
 import { useParams } from 'react-router-dom';
-
-const chaptersData = [
-    {
-      title: "Chapter 1: The Beginning",
-      content: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perferendis, incidunt deleniti! Est ipsam eos eum beatae facilis iure, blanditiis iusto harum ducimus voluptatum rem debitis non tempora nulla mollitia culpa.v"
-    },
-    {
-      title: "Chapter 2: The Adventure",
-      content: "This is the content of chapter 2..."
-    },
-    // ... more chapters
-  ];
+import { fetchStoryStorage } from '../utils/tzkt';
+import { getChaptersOfTheStory, getProposalOfTheStory } from '../utils/firebase';
 
 function Novel() {
 
   const {addr} = useParams();
 
+  const [activeProposal, setActiveProposal] = useState(false);
+
+  const [chaptersData, setChapterData] = useState([{
+    title : "",
+    content : ""
+  }]);
+
   useEffect(() => {
     (async () => {
-      console.log(addr);  
+      const temp_title = await fetchStoryStorage(addr);
+      setActiveProposal(temp_title.ongoing);
+      if(temp_title.ongoing == true) {
+        const proposal_res = await getProposalOfTheStory(temp_title.title);
+        console.log(proposal_res);
+      }
+      const res = await getChaptersOfTheStory(temp_title.title);
+      setChapterData(res);
     })();    
   }, []); 
 
   return (
     <div>
-        <ChapterDisplay chapters={chaptersData} />;
+        <ChapterDisplay chapters={chaptersData} proposal_active={activeProposal} />;
     </div>
   )
 }

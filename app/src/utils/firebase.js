@@ -45,16 +45,63 @@ export const firebaseBaseAddStory = async (title, coverImage, desc, category, ma
   }
 }
 
-export const firebaseAddProposal = async (story, title, option1, option2, option3) => {
+export const firebaseAddProposal = async (story, title, option1, option2, option3, content1, content2, content3) => {
   try {
     const docRef = await addDoc(collection(db, "proposals"), {
       story : story,
       title : title,
       option1 : option1,
       option2 : option2,
-      option3 : option3
+      option3 : option3,
+      content1 : content1,
+      content2 : content2,
+      content3 : content3,
     }); 
     return docRef.id;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const firebaseAddFirstChapter = async (story, title, content, content_hash) => {
+  try {
+    const docRef = await addDoc(collection(db, "chapters"), {
+      story : story,
+      title : title,
+      content : content,
+      content_hash : content_hash
+    }); 
+    return docRef.id;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getChaptersOfTheStory = async (title) => {
+  try {
+    let output = [];
+    const querySnapshot = await getDocs(collection(db, "chapters"));
+    querySnapshot.forEach((doc) => {
+      if(doc.data().story == title) {
+        output.push(doc.data());
+      }
+    });
+    return output;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getProposalOfTheStory = async (title) => {
+  try {
+    let output = [];
+    const querySnapshot = await getDocs(collection(db, "proposals"));
+    querySnapshot.forEach((doc) => {
+      if(doc.data().story == title) {
+        output.push(doc.data());
+      }
+    });
+    return output;
   } catch (error) {
     console.log(error);
   }

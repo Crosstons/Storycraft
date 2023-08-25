@@ -43,7 +43,7 @@ function WriteStory() {
     const res2 = "0x" + crypto.createHash('sha256').update(storyContent[2]).digest('hex');
 
     await proposeOperation(addr, res0, res1, res2);
-    await firebaseAddProposal(storyTitle, chapterTitle, res0, res1, res2);
+    await firebaseAddProposal(storyTitle, chapterTitle, res0, res1, res2, storyContent[0], storyContent[1], storyContent[2]);
 
   }
 

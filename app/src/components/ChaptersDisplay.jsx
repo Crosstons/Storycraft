@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function ChapterDisplay({ chapters }) {
+function ChapterDisplay({ chapters, proposal_active }) {
   const [currentChapterIndex, setCurrentChapterIndex] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
   const [timeLeft, setTimeLeft] = useState(48 * 60 * 60); // 2 days in seconds
@@ -56,10 +56,6 @@ function ChapterDisplay({ chapters }) {
           <button onClick={() => setActiveTab(2)} className={`py-2 px-4 ${activeTab === 2 ? 'border-b-2 border-blue-600' : ''}`}>Variation 3</button>
         </div>
       </div>
-      <div className="text-center text-gray-700 rounded-lg p-2 my-2">
-        <h2 className="text-xl">Voting Time Left</h2>
-        <p className="text-lg">{`${hours}h ${minutes}m ${seconds}s`}</p>
-      </div>
       <h1 className="text-2xl font-semibold mb-4">{chapters[currentChapterIndex].title}</h1>
       <p className="text-gray-700 mb-4">{chapters[currentChapterIndex].content}</p>
       <button
@@ -69,14 +65,16 @@ function ChapterDisplay({ chapters }) {
         Next Chapter
       </button>
       {/* Voting Box */}
-      <div className="shadow-custom w-full mt-8 p-4 rounded-lg bg-white">
-        <h2 className="text-2xl font-semibold mb-4">Vote for a Variation</h2>
-        <div className="flex justify-around">
-          <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Variation 1</button>
-          <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Variation 2</button>
-          <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Variation 3</button>
+      {proposal_active ?
+        <div className="shadow-custom w-full mt-8 p-4 rounded-lg bg-white">
+          <h2 className="text-2xl font-semibold mb-4">Vote for a Variation</h2>
+          <div className="flex justify-around">
+            <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Variation 1</button>
+            <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Variation 2</button>
+            <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Variation 3</button>
+          </div>
         </div>
-      </div>
+      : ""}
     </div>
   );
 }

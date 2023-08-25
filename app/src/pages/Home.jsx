@@ -7,7 +7,7 @@ function Home() {
 
   useEffect(() => {
     (async () => {
-        const res = await fetchStorage();
+        // const res = await fetchStorage();
         // console.log(res);              
     })();    
   }, []); 

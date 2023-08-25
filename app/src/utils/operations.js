@@ -2,7 +2,7 @@ import { tezos } from "./tezos";
 
 export const createOperation = async (title, first_chapter_hash) => {
   try {
-    const contractInstance = await tezos.wallet.at('KT1G1TeB6vZV6MSaDR3yZ9ExsQmSnERdgep2');
+    const contractInstance = await tezos.wallet.at('KT1Q6WTWL1n2NjZrUM42dvy1qMuqgyGHTZca');
     console.log(contractInstance);
     const op = await contractInstance.methods.default(first_chapter_hash, title).send();
     await op.confirmation(1);
