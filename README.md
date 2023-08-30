@@ -23,7 +23,7 @@ Traditional storytelling methods lack interactivity and leave readers as mere sp
 - and more...
 
 ## Project Demo Guide
-To get a feel for how Storycraft works, follow our [Project Demo Guide](Temp-Link).
+To get a feel for how Storycraft works, follow our [Project Demo Guide](https://gamma.app/docs/StoryCraft-Demo-Guide-bkso85iz8z9pghq).
 
 ## Deployed Contract Address
 Our smart contracts are deployed at: [https://ghostnet.tzkt.io/KT1Q6WTWL1n2NjZrUM42dvy1qMuqgyGHTZca/operations/](https://ghostnet.tzkt.io/KT1Q6WTWL1n2NjZrUM42dvy1qMuqgyGHTZca/operations/)
