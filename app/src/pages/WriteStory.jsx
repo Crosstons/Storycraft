@@ -3,8 +3,7 @@ import { proposeOperation } from '../utils/operations';
 import { firebaseAddProposal } from '../utils/firebase';
 import { useParams } from 'react-router-dom';
 import { fetchStorage, fetchStoryTitle } from '../utils/tzkt';
-
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 function WriteStory() {
   const {title} = useParams();
