@@ -3,8 +3,7 @@ import { createOperation } from '../utils/operations';
 import { firebaseAddFirstChapter, firebaseBaseAddStory } from '../utils/firebase';
 import { getAccount } from '../utils/wallet';
 import { fetchStorage, fetchStoryTitle } from '../utils/tzkt';
-
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 function StoryForm() {
     const [title, setTitle] = useState('');
@@ -32,6 +31,7 @@ function StoryForm() {
         await firebaseBaseAddStory(title, image, description, genre, isMature, [], account);
         await firebaseAddFirstChapter(title, firstChapterTitle, firstChapter, "0x" + crypto.createHash('sha256').update(firstChapter).digest('hex'));
         setLoading(false);
+        alert("Created Story Successfully! Go To Home Screen");
       } catch (error) {
         console.log(error);
       }
